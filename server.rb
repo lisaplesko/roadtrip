@@ -35,7 +35,7 @@ TILES = DB.collection('tiles')
   end
 
   get '/go' do
-    erb :go
+    erb :go, layout: false
   end
 
   get '/:username/albums' do
@@ -47,16 +47,16 @@ TILES = DB.collection('tiles')
   end
 
   # API
-  post '/api/tiles' do 
+  post '/api/tiles' do
     TILES.insert({url: params[:tile_url]}).to_json
   end
 
-  # get '/api/tiles' 
+  # get '/api/tiles'
 
   get '/go' do
     erb :index
   end
-  
+
   get '/api/:username/albums' do
     find_user_albums(params[:username])
   end
