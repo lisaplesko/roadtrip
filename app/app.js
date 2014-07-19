@@ -7,21 +7,21 @@ var roadTripApp = angular.module('roadTripApp', ['ngRoute']);
 roadTripApp.config(['$routeProvider', function ($routeProvider){
 
   $routeProvider
-    .when('/',
-    {
-      controller:
-      templateUrl:
-    })
-    .when('/albums',
-    {
-      controller:
-      templateUrl:
-    })
+    // .when('/',
+    // {
+    //   controller: '',
+    //   templateUrl: ''
+    // })
+    // .when('/albums',
+    // {
+    //   controller: '',
+    //   templateUrl: ''
+    // })
     .when('/trip',
     {
-      controller:
-      templateUrl:
-    })
-    .otherwise({ redirectTo: '/' });
+      controller: '',
+      templateUrl: 'app/views/hyperlapse.html'
+    });
+    // .otherwise({ redirectTo: '/' });
 
 }])
