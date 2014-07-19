@@ -1,17 +1,11 @@
 <div ng-controller='AlbumCtrl'>
-
-  <div id="album_title_container" class="">
-    <form id="album_title_form" method="post">
-      <input id="album_title" class="" type="text" size="35" placeholder="Set a title for this album">
-    </form>
-  </div>
-
   <div ng-repeat="album in albums track by $index">
     <a href="albums/{{album.title}}/photos">{{album.title}}</a>
     PHOTOS
-    <div id="dog" ng-repeat="photo in album.photos track by $index">
+    <div id="dog" ng-repeat="photo in album.photos | filterz:'$index':true ">
       <img data-id="photo-{{$index}}"src="{{photo}}">
     </div>
-    <!-- <div ng-repeat="album.photos in album track by $index"></div>{{photos}} -->
   </div>
 </div>
+
+<a href="/">Home</a>
