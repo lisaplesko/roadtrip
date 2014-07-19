@@ -34,6 +34,10 @@ ALBUMS = DB.collection('albums')
     send_file 'FILENAME.html'
   end
 
+  get '/go' do
+    send_file 'index.html'
+  end
+
   # API
   get '/api/albums/:username' do
     user =  USERS.find({username: params[:username]}).to_a[0]['albums'].map do |album_id|

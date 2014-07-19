@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>roadtrip</title>
 
-    <link href="css/style.css" rel="stylesheet">
+    <link href="../public/css/style.css" rel="stylesheet">
 
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
   </head>
@@ -19,7 +19,6 @@
      <div id="hud"></div>
      <div id="map"></div>
 
-      <h1>Bite me yoo</h1>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.13/angular.min.js"></script>
@@ -28,14 +27,14 @@
     <script src="app/app.js"></script>
     <script src="app/screenshot.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false" type="text/javascript"></script>
-    <script src="scripts/vendor/hyperlapse/dat.gui.min.js"></script>
-    <script src="scripts/vendor/threejs/three.min.js"></script>
-    <script src="scripts/vendor/gsvpano/GSVPano.js"></script>
-    <script src="scripts/vendor/hyperlapse/Hyperlapse.js"></script>
+    <script src="../public/js/vendor/hyperlapse/dat.gui.min.js"></script>
+    <script src="../public/js/vendor/threejs/three.min.js"></script>
+    <script src="../public/js/vendor/gsvpano/GSVPano.js"></script>
+    <script src="../public/js/vendor/hyperlapse/Hyperlapse.js"></script>
     <script>
 
-      var start_point = new google.maps.LatLng(-8.237486, -76.404367);
-      var end_point = new google.maps.LatLng(-8.511593, -76.299482);
+      var start_point = new google.maps.LatLng(-22.473286, -44.522437);
+      var end_point = new google.maps.LatLng(-22.467779, -44.508103);
       var lookat_point = new google.maps.LatLng(44.34232747290594, 6.786460550292986);
       var map, directions_renderer, directions_service, streetview_service, geocoder;
       var start_pin, end_pin, pivot_pin, camera_pin;
@@ -149,19 +148,21 @@
 
       var pano = document.getElementById('pano');
       var is_moving = false;
-      var px, py;
+
+      this.px = null;
+      this.py = null;
       var onPointerDownPointerX=0, onPointerDownPointerY=0;
 
       var hyperlapse = new Hyperlapse(pano, {
         lookat: lookat_point,
-        fov: 80,
+        fov: 100,
         millis: 50,
         width: window.innerWidth,
         height: window.innerHeight,
         zoom: 2,
-        use_lookat: false,
+        use_lookat: true,
         distance_between_points: 5,
-        max_points: 100,
+        max_points: 14,
         elevation: _elevation
       });
 
@@ -208,41 +209,47 @@
         camera_pin.setPosition(e.point.location);
       };
 
-      pano.addEventListener( 'mousedown', function(e){
-        e.preventDefault();
 
-        is_moving = true;
+      $('#pano > canvas').mousedown(function(e){
+         is_moving = true;
 
         onPointerDownPointerX = e.clientX;
         onPointerDownPointerY = e.clientY;
+        console.log('mousedown')
+        this.px = hyperlapse.position.x;
+        this.py = hyperlapse.position.y;
+      });
 
-        px = hyperlapse.position.x;
-        py = hyperlapse.position.y;
+      
+      
 
-      }, false );
-
-      pano.addEventListener( 'mousemove', function(e){
+      $('#pano > canvas').mousemove(function(e){
         e.preventDefault();
-        var f = hyperlapse.fov() / 500;
-
+        var f = hyperlapse.fov() / 1000;
+        console.log('mousemove')
         if ( is_moving ) {
           var dx = ( onPointerDownPointerX - e.clientX ) * f;
-          var dy = ( e.clientY - onPointerDownPointerY ) * f;
-          hyperlapse.position.x = px + dx; // reversed dragging direction (thanks @mrdoob!)
-          hyperlapse.position.y = py + dy;
+          var dy = ( e.clientY - onPointerDownPointerY ) * f * 0.25;
+          hyperlapse.position.x = this.px + dx; // reversed dragging direction (thanks @mrdoob!)
+          hyperlapse.position.y = this.py + dy;
+
 
           o.position_x = hyperlapse.position.x;
           o.position_y = hyperlapse.position.y;
+          console.log("moving",hyperlapse.position.x,hyperlapse.position.y)
         }
-      }, false );
+        this.px = hyperlapse.position.x
+        this.py = hyperlapse.position.y
+      });
 
-      pano.addEventListener( 'mouseup', function(){
+      $('#pano > canvas').mouseup(function(e){
         is_moving = false;
 
-        hyperlapse.position.x = px;
+        hyperlapse.position.x = this.px;
+        hyperlapse.position.y = this.py;
+        console.log("up",hyperlapse.position.x,hyperlapse.position.x,hyperlapse.position.y)
         //hyperlapse.position.y = py;
-      }, false );
-
+      })
 
 
       /* Dat GUI */
@@ -332,7 +339,9 @@
             show_ui = !show_ui;
             document.getElementById("controls").style.opacity = (show_ui)?1:0;
             break;
-
+          case 13:
+            hyperlapse.play();
+            break;
           case 190: /* > */
             hyperlapse.next();
             break;
