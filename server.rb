@@ -17,9 +17,10 @@ use Rack::Session::Pool, :expire_after => 2592000
 # DB = Mongo::Connection.new.db("road_trip_app", :pool_size => 5,
 #   :timeout => 5)
 
+
+
 # HEROKU SETUP
-binding.pry
-uri = URI.parse(ENV["MONGOHQ_URL"])
+uri = URI.parse('mongodb://dogetown:towndoge@kahana.mongohq.com:10040/app27588324')
 db_name = uri.path.gsub(/^\//, '')
 DB = Mongo::Connection.new(uri.host,uri.port).db(db_name)
 DB.authenticate(uri.user,uri.password)
@@ -49,6 +50,10 @@ ALBUMS = DB.collection('albums')
     find_user_albums(params[:username])
   end
 
+  post '/api/:username/albums' do
+    album_title = params[:album_title]
+    ALBUMS.insert({title: album_title}).to_json
+  end
   get '/api/:username/albums/:album_title/photos' do
     find_album_photos(params[:username],params[:album_title])
   end
