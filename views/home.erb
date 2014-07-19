@@ -1,12 +1,21 @@
 <div ng-controller='AlbumCtrl'>
 
   <div ng-repeat="album in albums track by $index">
+    {{album.title}}
   </div>
 
 
-    <canvas id="hyperFixed" style="height: 600px; width: 800px;"></canvas>
-    <canvas id="hyper"></canvas>
-    <h1>Bite me yoo</h1>
+  <canvas id="hyperFixed" style="height: 600px; width: 800px;"></canvas>
+  <canvas id="hyper"></canvas>
+  <h1>Bite me yoo</h1>
 </div>
 
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.13/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.13/angular-animate.js"></script>
+  <script src="../js/angular-route.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/controllers/AlbumCtrl.js"></script>
+  <script src="../js/services/albumFactory.js"></script>
+</div>
