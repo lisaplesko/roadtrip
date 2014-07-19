@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" x-ng-app="roadTripApp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>roadtrip</title>
+
+    <link href="css/style.css" rel="stylesheet">
+
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div x-ng-view></div x-ng-view>
+
+     <div id="pano"></div>
+     <div id="hud"></div>
+     <div id="map"></div>
+
+      <h1>Bite me yoo</h1>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.13/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.13/angular-animate.js"></script>
+    <script src="scripts/angular-route.js"></script>
+    <script src="app/app.js"></script>
+    <script src="app/screenshot.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false" type="text/javascript"></script>
+    <script src="scripts/vendor/hyperlapse/dat.gui.min.js"></script>
+    <script src="scripts/vendor/threejs/three.min.js"></script>
+    <script src="scripts/vendor/gsvpano/GSVPano.js"></script>
+    <script src="scripts/vendor/hyperlapse/Hyperlapse.js"></script>
+    <script>
+
+      var start_point = new google.maps.LatLng(-8.237486, -76.404367);
+      var end_point = new google.maps.LatLng(-8.511593, -76.299482);
+      var lookat_point = new google.maps.LatLng(44.34232747290594, 6.786460550292986);
+      var map, directions_renderer, directions_service, streetview_service, geocoder;
+      var start_pin, end_pin, pivot_pin, camera_pin;
+      var _elevation = 0;
+      var _route_markers = [];
+
+      function show(msg) {
+        document.getElementById("hud").innerHTML = msg;
+      }
+      function init() {
+
+        if( window.location.hash ) {
+          parts = window.location.hash.substr( 1 ).split( ',' );
+          start_point = new google.maps.LatLng(parts[0], parts[1]);
+          lookat_point = new google.maps.LatLng(parts[2], parts[3]);
+          end_point = new google.maps.LatLng(parts[4], parts[5]);
+          _elevation = parts[6] || 0;
+        }
+
+        /* Map */
+
+        function snapToRoad(point, callback) {
+          var request = { origin: point, destination: point, travelMode: google.maps.TravelMode["DRIVING"] };
+          directions_service.route(request, function(response, status) {
+            if(status=="OK") callback(response.routes[0].overview_path[0]);
+            else callback(null);
+          });
+        }
+
+        function changeHash() {
+          window.location.hash = start_pin.getPosition().lat() + ',' + start_pin.getPosition().lng() + ','
+            + pivot_pin.getPosition().lat() + ',' + pivot_pin.getPosition().lng() + ','
+            + end_pin.getPosition().lat() + ',' + end_pin.getPosition().lng() + ','
+            + _elevation;
+        }
+
+        var mapOpt = {
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          center: start_point,
+          zoom: 15
+        };
+
+        map = new google.maps.Map(document.getElementById("map"), mapOpt);
+        geocoder = new google.maps.Geocoder();
+
+        var overlay = new google.maps.StreetViewCoverageLayer();
+        overlay.setMap(map);
+
+        directions_service = new google.maps.DirectionsService();
+        directions_renderer = new google.maps.DirectionsRenderer({draggable:false, markerOptions:{visible: false}});
+        directions_renderer.setMap(map);
+        directions_renderer.setOptions({preserveViewport:true});
+
+        camera_pin = new google.maps.Marker({
+          position: start_point,
+          map: map
+        });
+
+      start_pin = new google.maps.Marker({
+        position: start_point,
+        draggable: true,
+        map: map
+      });
+
+      google.maps.event.addListener (start_pin, 'dragend', function (event) {
+        snapToRoad(start_pin.getPosition(), function(result) {
+          start_pin.setPosition(result);
+          start_point = result;
+          changeHash();
+        });
+      });
+
+      end_pin = new google.maps.Marker({
+        position: end_point,
+        draggable: true,
+        map: map
+      });
+
+      google.maps.event.addListener (end_pin, 'dragend', function (event) {
+        snapToRoad(end_pin.getPosition(), function(result) {
+          end_pin.setPosition(result);
+          end_point = result;
+          changeHash();
+        });
+      });
+
+      pivot_pin = new google.maps.Marker({
+        position: lookat_point,
+        draggable: true,
+        map: map
+      });
+
+      google.maps.event.addListener (pivot_pin, 'dragend', function (event) {
+        hyperlapse.setLookat( pivot_pin.getPosition() );
+        changeHash();
+      });
+
+      function findAddress(address) {
+        geocoder.geocode( { 'address': address}, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            map.setCenter(results[0].geometry.location);
+            o.drop_pins();
+          } else {
+            show( "Geocode was not successful for the following reason: " + status );
+          }
+        });
+      }
+
+
+      /* Hyperlapse */
+
+      var pano = document.getElementById('pano');
+      var is_moving = false;
+      var px, py;
+      var onPointerDownPointerX=0, onPointerDownPointerY=0;
+
+      var hyperlapse = new Hyperlapse(pano, {
+        lookat: lookat_point,
+        fov: 80,
+        millis: 50,
+        width: window.innerWidth,
+        height: window.innerHeight,
+        zoom: 2,
+        use_lookat: false,
+        distance_between_points: 5,
+        max_points: 100,
+        elevation: _elevation
+      });
+
+
+
+      hyperlapse.onError = function(e) {
+        show( "ERROR: "+ e.message );
+      };
+
+      hyperlapse.onRouteProgress = function(e) {
+        _route_markers.push( new google.maps.Marker({
+          position: e.point.location,
+          draggable: false,
+          icon: "dot_marker.png",
+          map: map
+          })
+        );
+      };
+
+      hyperlapse.onRouteComplete = function(e) {
+        directions_renderer.setDirections(e.response);
+        show( "Number of Points: "+ hyperlapse.length() );
+        hyperlapse.load();
+      };
+
+      hyperlapse.onLoadProgress = function(e) {
+        show( "Loading: "+ (e.position+1) +" of "+ hyperlapse.length() );
+      };
+
+      hyperlapse.onLoadComplete = function(e) {
+        show( "" +
+          "Start: " + start_pin.getPosition().toString() +
+          "<br>End: " + end_pin.getPosition().toString() +
+          "<br>Lookat: " + pivot_pin.getPosition().toString() +
+          "<br>Ready." );
+      };
+
+      hyperlapse.onFrame = function(e) {
+        show( "" +
+          "Start: " + start_pin.getPosition().toString() +
+          "<br>End: " + end_pin.getPosition().toString() +
+          "<br>Lookat: " + pivot_pin.getPosition().toString() +
+          "<br>Position: "+ (e.position+1) +" of "+ hyperlapse.length() );
+        camera_pin.setPosition(e.point.location);
+      };
+
+      pano.addEventListener( 'mousedown', function(e){
+        e.preventDefault();
+
+        is_moving = true;
+
+        onPointerDownPointerX = e.clientX;
+        onPointerDownPointerY = e.clientY;
+
+        px = hyperlapse.position.x;
+        py = hyperlapse.position.y;
+
+      }, false );
+
+      pano.addEventListener( 'mousemove', function(e){
+        e.preventDefault();
+        var f = hyperlapse.fov() / 500;
+
+        if ( is_moving ) {
+          var dx = ( onPointerDownPointerX - e.clientX ) * f;
+          var dy = ( e.clientY - onPointerDownPointerY ) * f;
+          hyperlapse.position.x = px + dx; // reversed dragging direction (thanks @mrdoob!)
+          hyperlapse.position.y = py + dy;
+
+          o.position_x = hyperlapse.position.x;
+          o.position_y = hyperlapse.position.y;
+        }
+      }, false );
+
+      pano.addEventListener( 'mouseup', function(){
+        is_moving = false;
+
+        hyperlapse.position.x = px;
+        //hyperlapse.position.y = py;
+      }, false );
+
+
+
+      /* Dat GUI */
+
+      //var gui = new dat.GUI();
+
+      var o = {
+        distance_between_points:5,
+        max_points:500,
+        fov: 80,
+        elevation:Math.floor(_elevation),
+        tilt:0,
+        millis:50,
+        offset_x:0,
+        offset_y:0,
+        offset_z:0,
+        position_x:0,
+        position_y:0,
+        use_lookat:false,
+        screen_width: window.innerWidth,
+        screen_height: window.innerHeight,
+        generate:function(){
+          show( "Generating route..." );
+
+          directions_renderer.setDirections({routes: []});
+
+          var marker;
+          while(_route_markers.length > 0) {
+            marker = _route_markers.pop();
+            marker.setMap(null);
+          }
+
+          request = {
+            origin: start_point,
+            destination: end_point,
+            travelMode: google.maps.DirectionsTravelMode.DRIVING
+          };
+
+          directions_service.route(request, function(response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+              hyperlapse.generate({route: response});
+            } else {
+              console.log(status);
+            }
+          })
+        },
+        drop_pins:function(){
+          var bounds = map.getBounds();
+          var top_left = bounds.getNorthEast();
+          var bot_right = bounds.getSouthWest();
+          var hdif = Math.abs(top_left.lng() - bot_right.lng());
+          var spacing = hdif/4;
+
+          var center = map.getCenter();
+          var c1 = new google.maps.LatLng(center.lat(), center.lng()-spacing);
+          var c2 = new google.maps.LatLng(center.lat(), center.lng());
+          var c3 = new google.maps.LatLng(center.lat(), center.lng()+spacing);
+
+          hyperlapse.lookat = c2;
+          pivot_pin.setPosition(c2);
+
+          snapToRoad(c1, function(result1) {
+            start_pin.setPosition(result1);
+            start_point = result1;
+
+            snapToRoad(c3, function(result3) {
+              end_pin.setPosition(result3);
+              end_point = result3;
+              changeHash();
+            });
+          });
+        }
+      };
+
+      window.addEventListener('resize', function(){
+        hyperlapse.setSize(window.innerWidth, window.innerHeight);
+        o.screen_width = window.innerWidth;
+        o.screen_height = window.innerHeight;
+      }, false);
+
+      var show_ui = false;
+      document.addEventListener( 'keydown', onKeyDown, false );
+      function onKeyDown ( event ) {
+
+        switch( event.keyCode ) {
+          case 72: /* H */
+            show_ui = !show_ui;
+            document.getElementById("controls").style.opacity = (show_ui)?1:0;
+            break;
+
+          case 190: /* > */
+            hyperlapse.next();
+            break;
+
+          case 188: /* < */
+            hyperlapse.prev();
+            break;
+        }
+      };
+
+      o.generate();
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
