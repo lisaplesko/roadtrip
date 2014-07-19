@@ -14,14 +14,14 @@ use Rack::Session::Pool, :expire_after => 2592000
 
 # MONGO SETUP
 # LOCAL
-# DB = Mongo::Connection.new.db("road_trip_app", :pool_size => 5,
-#   :timeout => 5)
+DB = Mongo::Connection.new.db("road_trip_app", :pool_size => 5,
+  :timeout => 5)
 
 # HEROKU SETUP
-uri = URI.parse('mongodb://dogetown:towndoge@kahana.mongohq.com:10040/app27588324')
-db_name = uri.path.gsub(/^\//, '')
-DB = Mongo::Connection.new(uri.host,uri.port).db(db_name)
-DB.authenticate(uri.user,uri.password)
+# uri = URI.parse('mongodb://dogetown:towndoge@kahana.mongohq.com:10040/app27588324')
+# db_name = uri.path.gsub(/^\//, '')
+# DB = Mongo::Connection.new(uri.host,uri.port).db(db_name)
+# DB.authenticate(uri.user,uri.password)
 USERS = DB.collection('users')
 PHOTOS = DB.collection('photos')
 ALBUMS = DB.collection('albums')
@@ -48,7 +48,7 @@ ALBUMS = DB.collection('albums')
 
   post '/api/:username/albums' do
     album_title = params[:album_title]
-    ALBUMS.insert({title: album_title}).to_json
+    ALBUMS.insert({title: album_title, photos: []}).to_json
   end
 
   get '/api/:username/albums/:album_title/photos' do
@@ -56,9 +56,7 @@ ALBUMS = DB.collection('albums')
   end
 
   post '/api/:username/albums/:album_name/add_to_album' do
-    puts "PHOTO"
-    puts params[0]
-    upload(params[:username],params[:album_name],params)
+    upload(params[:username],params[:album_name],params[:file])
   end
 
 # ADDITIONAL METHODS
@@ -85,6 +83,6 @@ def find_album_photos(username, album_title)
      end.to_json
 end
 
-def upload(data)
-
+def upload(username,album,data)
+  ALBUMS.update({title: album.capitalize},{ "$push"=> {photos: data}}).to_a[0].to_json
 end
