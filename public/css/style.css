@@ -352,7 +352,7 @@ html, body {
   margin: 0; }
 
 #pano {
-  background: url("../img/cartographer_2x.png");
+  background: url("../img/cartographer_@2X.png");
   background-repeat: auto;
   position: absolute;
   left: 0;
@@ -459,7 +459,3 @@ html, body {
 
 .map_form {
   visibility: hidden; }
-
-.destination-select {
-  margin-top: 80px;
-}
