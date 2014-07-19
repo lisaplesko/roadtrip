@@ -217,6 +217,7 @@ var Hyperlapse = function(container, params) {
 		
 		_h_points[_point_index].image = canvas;
 
+		//console.log("onPanoramaLoad", _h_points[_point_index].image.toDataURL())
 		if(++_point_index != _h_points.length) {
 			handleLoadProgress( {position:_point_index} );
 
@@ -435,6 +436,7 @@ var Hyperlapse = function(container, params) {
 
 	var drawMaterial = function() {
 		_mesh.material.map.image = _h_points[_point_index].image;
+		console.log(_h_points[_point_index].image)
 		_mesh.material.map.needsUpdate = true;
 
 		_origin_heading = _h_points[_point_index].heading;
@@ -458,7 +460,7 @@ var Hyperlapse = function(container, params) {
 	};
 
 	var render = function() {
-		if(!_is_loading && self.length()>0) {
+		if( self.length()>0) {
 			var t = _point_index/(self.length());
 
 			var o_x = self.position.x + (self.offset.x * t);
