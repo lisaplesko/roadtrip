@@ -44,7 +44,7 @@ ALBUMS = DB.collection('albums')
     find_album_photos(params[:username],params[:album_title])
   end
 
-  get '/add_to_album'
+  get '/add_to_album' do
    filename = session[:username]+"/albums/"+session[:album_title]+"/photos"
    upload(filename,params[:data])
   end
