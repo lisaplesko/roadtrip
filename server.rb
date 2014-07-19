@@ -23,22 +23,24 @@ ALBUMS = DB.collection('albums')
 
   # ANGULAR
   get '/' do
-    send_file 'views/home.html'
+    erb :home
   end
 
-  get '/albums/:userId' do
-    send_file 'FILENAME.html'
+  get '/:username/albums' do
+    erb :albums
   end
 
   get '/trip' do
-    send_file 'FILENAME.html'
+    erb :trip
   end
 
   # API
   get '/api/albums/:username' do
-    user =  USERS.find({username: params[:username]}).to_a[0]['albums'].map do |album_id|
-        ALBUMS.find({_id: album_id}).to_a[0]
-    end.to_json
+    find_user_albums(params[:username])
+  end
+
+  get '/api/photos/:album_id' do
+    find_album_photos(params[:album_id])
   end
 
 
@@ -50,4 +52,18 @@ end
 
 def from_bson_id(obj)
    obj.merge({'_id' => obj['_id'].to_s})
+end
+
+def find_user_albums(username)
+ USERS.find({username: username})
+     .to_a[0]['albums'].map do |album_id|
+        ALBUMS.find({_id: album_id}).to_a[0]
+     end.to_json
+end
+
+def find_album_photos(album_id)
+  ALBUMS.find({_id: album_id})
+      .to_a[0]['photos'].map do |photo_id|
+        PHOTOS.find({_id: photo_id}).to_a[0]
+      end.to_json
 end

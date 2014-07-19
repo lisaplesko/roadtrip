@@ -16,3 +16,7 @@ gem install sinatra/reloader
 
 then:
 ruby server.rb
+
+then:
+
+localhost:4567
