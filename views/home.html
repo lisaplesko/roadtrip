@@ -13,8 +13,8 @@
 
   <body ng-controller='HomeCtrl'>
 
-    <div ng-repeat="image in images">
-      {{image}}
+    <div ng-repeat="album in albums track by $index">
+      {{album.title}}
     </div>
 
       <div id="pano">

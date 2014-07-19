@@ -6,6 +6,7 @@ require 'json'
 require 'dotenv'
 require 'rack'
 require 'sinatra/reloader'
+require 'pry'
 
 # SESSIONS
 use Rack::Session::Pool, :expire_after => 2592000
@@ -20,7 +21,7 @@ ALBUMS = DB.collection('albums')
 
 # ROUTES
 
-  # ANGULAR ROUTES
+  # ANGULAR
   get '/' do
     send_file 'views/home.html'
   end
@@ -34,10 +35,11 @@ ALBUMS = DB.collection('albums')
   end
 
   # API
-  get '/api/photos' do
-    return 'dog'
+  get '/api/albums/:username' do
+    user =  USERS.find({username: params[:username]}).to_a[0]['albums'].map do |album_id|
+        ALBUMS.find({_id: album_id}).to_a[0]
+    end.to_json
   end
-
 
 
 
