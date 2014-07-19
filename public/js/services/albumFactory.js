@@ -1,12 +1,12 @@
 roadTripApp.factory('albumFactory', ['$http', function($http){
   var factory = {};
 
-  factory.getAlbums = function(){
-    return $http.get("/api/albums/trinity")
+  factory.getAlbums = function(username){
+    return $http.get("/api/"+username+"/albums")
   };
 
-  factory.getPhotos = function(){
-    return $http.get("/api/photos/peru")
+  factory.getPhotos = function(username,album_title){
+    return $http.get("/api/"+username+"/albums/"+album_title+'/photos')
   };
 
   return factory;
