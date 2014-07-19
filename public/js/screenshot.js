@@ -1,33 +1,37 @@
 $(document).ready(function(){
-  takePhoto();
+  roadTripAdd.screenshot.init();
 });
 
+roadTripApp.screenshot = {
+  init : function(){
+    var that = this;
+    $(document).keypress(function(e){
+      if($('#screen') && e.keyCode == 32) {
+        this.capture();
+      }
+    });
+  },
 
-var takePhoto = function(){
-  $(document).keypress(function(e){
-    if (e.keyCode == 32 && $('#spacebar').length) {
-      alert('spacebar!');
-      // Insert function to take screenshot
+  capture : function(){
 
-      sendToS3(image)
-    }
-    e.preventDefault();
-  });
-  // var canvas = document.getElementById('joyRide')
-  // var image = new Image();
-  // image.id = "pic"
-  // image.src = canvas.toDataURL();
-}
+  },
 
-var sendToS3 = function(image){
-  $.ajax({
-          url: '/add_to_album',
-          method: 'post',
-          dataType: 'json',
-          data: image
-        }).done(function(data) {
-          console.log(data);
-          console.log("Added to album!")
-            });
+  sendToS3 : function(image){
+    $.ajax({
+      url: '/add_to_album',
+      method: 'post',
+      dataType: 'json',
+      data: image
+    }).done(function(data) {
+      console.log(data);
+      console.log("Added to album!");
+    });
 
-}
+  }
+};
+
+var IdGenerator = {
+  generateId : function(){
+    return new Date().getTime();
+  }
+};
