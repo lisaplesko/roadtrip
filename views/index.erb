@@ -19,10 +19,22 @@
 var hyperlapse;
     function init() {
        function show(msg) {
-       document.getElementById('hud-body').innerHTML = msg;
-       console.log(document.getElementById('hud-body').innerHTML)
+        document.getElementById('hud-body').innerHTML = msg;
+        console.log(document.getElementById('hud-body').innerHTML)
       }
-
+  //     var facts = [
+  //     'Catalonia comprises four provinces: Barcelona, Girona, Lleida, and Tarragona. The capital and largest city is Barcelona, the second largest city in Spain, and the centre of one of the largest metropolitan areas in Europe, and it comprises most of the territory of the former Principality of Catalonia, with the remainder now part of France.',
+  //   'Catalonia is bordered by France and Andorra to the north, the Mediterranean Sea to the east, and the Spanish regions of Aragon and the Valencian Community to west and south respectively.',
+  //   'In the 10th century the eastern counties of the March of Gothia and the Marca Hispanica became independent from the Frankish kingdom, uniting as vassals of Barcelona.',
+  //   "In 1137 Barcelona and Aragon formed the Crown of Aragon, and Catalonia became a maritime power and the main base for the Crown of Aragon's naval power and expansionism in the Mediterranean.",
+  //   "During the Reapers' War (1640–52), Catalonia rebelled against the presence of Castillian army in its territory, becoming a republic under French protection. Under the terms of the Treaty of the Pyrenees in 1659, which ended the wider Franco-Castillian war, Castille agreed with France to cede it the northern parts of Catalonia, mostly incorporated in the county of Roussillon.",
+  //   'Despite the Napoleonic and Carlist Wars, Catalonia experienced economic growth and industrialisation. During the second half of the 19th century, the region saw a cultural renaissance coupled with incipient nationalism, while several workers movements appeared.',
+  //   'In 1913, the four Catalan provinces formed a Commonwealth, and with the advent of democracy during the Second Spanish Republic (1931–39), the Generalitat of Catalonia, was restored. After the Spanish Civil War, the Francoist dictatorship enacted repressive measures, abolishing Catalan institutions and banning the official use of the Catalan language again.',
+  //   "In 987, Wilfred the Hairy, count of Barcelona did not recognise Hugh Capet, making his successors (Sunyer, Borrell II, Miro I, and so on) de facto independent of the Carolingian crown. In 1137, Ramon Berenguer IV, Count of Barcelona decided to accept King Ramiro II of Aragon's proposal to marry Queen Petronila, establishing the dynastic union of the County of Barcelona with the Kingdom of Aragon, creating the Crown of Aragon and making the Catalan counties that were united under the county of Barcelona into a principality of the Aragonese Crown.",
+  //   "As a coastal territory of the Crown of Aragon, Catalonia, Barcelona in particular, became the base of the Crown maritime dominion and lead the expansion, the power and the influence of the Crown of Aragon in the Mediterranean. Gradually, new territories such as, the Kingdom of Valencia, the Kingdom of Majorca and later Sardinia, the Kingdom of Sicily, Corsica and Duchy of Athens were incorporated under the dynasty of the House of Aragon and Barcelona (1164–1410) into the Crown. In the 12th century, under the patronage of the counts of Barcelona, a Catalan literature first appeared and flourished in the next few centuries.",
+  //   "In 1410, King Martin I died without surviving descendants. As a result, by the Pact of Caspe, Ferdinand of Antequera from the Castilian dynasty of Trastámara received the Crown of Aragon as Ferdinand I of Aragon. His grandson, King Ferdinand II of Aragon, and Queen Isabella I of Castile married in 1469, becoming the Catholic Monarchs; subsequently, this event was seen by some Castilian historiographers as the dawn of the unified Kingdom of Spain. At that point, though united by marriage, the Crowns of Castile and Aragon maintained distinct territories, each keeping its own traditional institutions, parliaments and laws. Castile commissioned in monopoly the expeditions to the Americas, and benefited from the colonial riches. Political power gradually shifted away from the Aragonese court to the court of the Spanish Crown.",
+  //   "The defeat of the Republic of Spain in the Spanish Civil War brought fascist Francisco Franco to power as dictator. His regime imposed linguistic, political and cultural restrictions across Spain. In Catalonia, any kind of public activities associated with Catalan nationalism, Anarchism, Socialism, Democracy or Communism, including the publication of books on those subjects or simply discussion of them in open meetings, was banned. Franco's regime banned the use of Catalan in government-run institutions and during public events. The pro-Republic of Spain President of Catalonia, Lluís Companys, was taken to Spain from his exile in the German-occupied France, tortured and executed for the crime of 'military rebellion'"
+  // ];
       var path = [
     
           {
@@ -59,7 +71,11 @@ var hyperlapse;
           // }
 
       ];
-
+      var start_point = new google.maps.LatLng(path[0].lat, path[0].lng);
+      var end_point = new google.maps.LatLng(path[3].lat, path[3].lng);
+      var lookat_point = new google.maps.LatLng(44.34232747290594, 6.786460550292986);
+      var map, directions_renderer, directions_service, streetview_service, geocoder;
+      var start_pin, end_pin, pivot_pin, camera_pin;
       var iter = 0;
       var frameNum = 0;
       var canvas, ctx;
@@ -104,13 +120,13 @@ var hyperlapse;
         console.log(e);
       };
       hyperlapse.onLoadProgress = function(e) {
-        show( "Loading: "+ (e.position+1) +" of "+ hyperlapse.length() );
+        //show( "Loading: "+ (e.position+1) +" of "+ hyperlapse.length() );
       };
 
       hyperlapse.onRouteComplete = function(e) {
         console.log('onRouteComplete called', e)
         hyperlapse.load();
-        show( "Number of Points: "+ hyperlapse.length() );
+        //show( "Number of Points: "+ hyperlapse.length() );
       //  setNewPosition()
 
       };
@@ -125,7 +141,9 @@ var hyperlapse;
       });
 
       
-      
+      // setInterval(new function(){
+      //   show(facts[2])
+      // },3000)
 
       $('#pano > canvas').mousemove(function(e){
         e.preventDefault();
@@ -140,7 +158,7 @@ var hyperlapse;
 
          // o.position_x = hyperlapse.position.x;
           //o.position_y = hyperlapse.position.y;
-          console.log("moving",hyperlapse.position.x,hyperlapse.position.y)
+          //console.log("moving",hyperlapse.position.x,hyperlapse.position.y)
         }
         this.px = hyperlapse.position.x
         this.py = hyperlapse.position.y
@@ -151,20 +169,20 @@ var hyperlapse;
 
         hyperlapse.position.x = this.px;
         hyperlapse.position.y = this.py;
-        console.log("up",hyperlapse.position.x,hyperlapse.position.x,hyperlapse.position.y)
+        //console.log("up",hyperlapse.position.x,hyperlapse.position.x,hyperlapse.position.y)
         //hyperlapse.position.y = py;
       })
       hyperlapse.onLoadComplete = function(e) {
 
         canvas = $('canvas')[0], ctx = canvas.getContext("2d");
         hyperlapse.onLoadComplete = function(e) {
-        show( "" +
-          "Start: " + start_pin.getPosition().toString() +
-          "<br>End: " + end_pin.getPosition().toString() +
-          "<br>Lookat: " + pivot_pin.getPosition().toString() +
-          "<br>Ready." );
+        // show( "" +
+        //   "Start: " + start_pin.getPosition().toString() +
+        //   "<br>End: " + end_pin.getPosition().toString() +
+        //   "<br>Lookat: " + pivot_pin.getPosition().toString() +
+        //   "<br>Ready." );
       };
-        console.log('onLoadComplete called', e);
+        //console.log('onLoadComplete called', e);
         //hyperlapse.setLookat(new google.maps.LatLng(path[iter+1].lat,path[iter+1].lng), true, function() {
           //hyperlapse.play();
         //})
@@ -175,9 +193,65 @@ var hyperlapse;
         hyperlapse.setSize(window.innerWidth, window.innerHeight);
       });
 
+        var mapOpt = {
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          center: start_point,
+          zoom: 15
+        };
+        
+        map = new google.maps.Map(document.getElementById("map"), mapOpt);
+        geocoder = new google.maps.Geocoder();
+
+        var overlay = new google.maps.StreetViewCoverageLayer();
+        overlay.setMap(map);
+
+        directions_service = new google.maps.DirectionsService();
+        directions_renderer = new google.maps.DirectionsRenderer({draggable:false, markerOptions:{visible: false}});
+        directions_renderer.setMap(map);
+        directions_renderer.setOptions({preserveViewport:true});
+
+        camera_pin = new google.maps.Marker({
+          position: start_point,
+          map: map
+        });
+
+      start_pin = new google.maps.Marker({
+        position: start_point,
+        draggable: false,
+        map: map
+      });
+
+      google.maps.event.addListener (start_pin, 'dragend', function (event) {
+        snapToRoad(start_pin.getPosition(), function(result) {
+          start_pin.setPosition(result);
+          start_point = result;
+          changeHash();
+        });
+      });
+
+      end_pin = new google.maps.Marker({
+        position: end_point,
+        draggable: false,
+        map: map
+      });
+
+      google.maps.event.addListener (end_pin, 'dragend', function (event) {
+        snapToRoad(end_pin.getPosition(), function(result) {
+          end_pin.setPosition(result);
+          end_point = result;
+          changeHash();
+        });
+      });
+
+      pivot_pin = new google.maps.Marker({
+        position: lookat_point,
+        draggable: false,
+        map: map
+      });
+
       hyperlapse.onFrame = function(e) {
-        console.log("frame", e.position);
-        console.log("length", hyperlapse.length());
+        //console.log("frame", e.position);
+        //console.log("length", hyperlapse.length());
 
         // canvas.toBlob(function(blob) {
         //     saveAs(blob, frameNum + ".png");
@@ -185,7 +259,7 @@ var hyperlapse;
         // });
 
         if(e.position == hyperlapse.length()-1) {
-          console.log("HOLY FUCK HERE WE GO");
+          //console.log("HOLY FUCK HERE WE GO");
           hyperlapse.pause();
           setNewPosition();
         }
@@ -205,7 +279,7 @@ var hyperlapse;
       directions_service.route(route.request, function(response, status) {
         if (status == google.maps.DirectionsStatus.OK) {
           hyperlapse.generate( {route:response} );
-           show( "Generating route..." );
+           //show( "Generating route..." );
         } else {
           console.log(status);
         }
