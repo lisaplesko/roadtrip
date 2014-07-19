@@ -381,3 +381,7 @@ html, body {
 
 .map_form {
   visibility: hidden; }
+
+.destination-select {
+  margin-top: 80px;
+}
