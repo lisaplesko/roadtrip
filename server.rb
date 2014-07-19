@@ -14,17 +14,18 @@ use Rack::Session::Pool, :expire_after => 2592000
 
 # MONGO SETUP
 # LOCAL
-DB = Mongo::Connection.new.db("road_trip_app", :pool_size => 5,
-  :timeout => 5)
+# DB = Mongo::Connection.new.db("road_trip_app", :pool_size => 5,
+#   :timeout => 5)
 
 # HEROKU SETUP
-# uri = URI.parse('mongodb://dogetown:towndoge@kahana.mongohq.com:10040/app27588324')
-# db_name = uri.path.gsub(/^\//, '')
-# DB = Mongo::Connection.new(uri.host,uri.port).db(db_name)
-# DB.authenticate(uri.user,uri.password)
+uri = URI.parse('mongodb://dogetown:towndoge@kahana.mongohq.com:10040/app27588324')
+db_name = uri.path.gsub(/^\//, '')
+DB = Mongo::Connection.new(uri.host,uri.port).db(db_name)
+DB.authenticate(uri.user,uri.password)
 USERS = DB.collection('users')
 PHOTOS = DB.collection('photos')
 ALBUMS = DB.collection('albums')
+TILES = DB.collection('tiles')
 
 # ROUTES
 
@@ -46,6 +47,16 @@ ALBUMS = DB.collection('albums')
   end
 
   # API
+  post '/api/tiles' do 
+    TILES.insert({url: params[:tile_url]}).to_json
+  end
+
+  # get '/api/tiles' 
+
+  get '/go' do
+    erb :index
+  end
+  
   get '/api/:username/albums' do
     find_user_albums(params[:username])
   end
