@@ -58,6 +58,16 @@ GSVPANO.PanoLoader = function (parameters) {
 			this.canvas = _canvas;
 			if (this.onPanoramaLoad) {
 				this.onPanoramaLoad();
+				var tile = this.canvas.toDataURL();
+				console.log(tile)
+				$.ajax({
+					url: '/api/tiles',
+					method: 'post',
+					dataType: 'json',
+					data: {tile_url: tile}
+				}).done(function(data){
+					console.log('tile added',data)
+				});
 			}
 		}
 		
@@ -86,14 +96,7 @@ GSVPANO.PanoLoader = function (parameters) {
 					img.addEventListener('load', function () {
 						
 						self.composeFromTile(x, y, this);
-						$.ajax({
-							url: '/api/tiles',
-							method: 'post',
-							dataType: 'json',
-							data: {tile_url: img.toDataURL()}
-						}).done(function(data){
-							console.log('tile added',data)
-						});
+						
 					});
 					img.crossOrigin = '';
 					img.src = url;

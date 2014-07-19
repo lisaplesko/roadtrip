@@ -436,7 +436,7 @@ var Hyperlapse = function(container, params) {
 
 	var drawMaterial = function() {
 		_mesh.material.map.image = _h_points[_point_index].image;
-		console.log(_h_points[_point_index].image)
+		//console.log(_h_points[_point_index].image)
 		_mesh.material.map.needsUpdate = true;
 
 		_origin_heading = _h_points[_point_index].heading;

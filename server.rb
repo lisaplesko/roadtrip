@@ -47,6 +47,8 @@ TILES = DB.collection('tiles')
     TILES.insert({url: params[:tile_url]}).to_json
   end
 
+  # get '/api/tiles' 
+
   get '/go' do
     erb :index
   end
