@@ -140,7 +140,8 @@ var Hyperlapse = function(container, params) {
 		_ctime = Date.now(),
 		_ptime = 0, _dtime = 0,
 		_prev_pano_id = null,
-		_raw_points = [], _h_points = [];
+		_raw_points = [], 
+		_h_points = [];
 
 	/**
 	 * @event Hyperlapse#onError
@@ -213,7 +214,7 @@ var Hyperlapse = function(container, params) {
 		canvas.setAttribute('width',this.canvas.width);
 		canvas.setAttribute('height',this.canvas.height);
 		context.drawImage(this.canvas, 0, 0);
-
+		
 		_h_points[_point_index].image = canvas;
 
 		if(++_point_index != _h_points.length) {
