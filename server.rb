@@ -61,10 +61,14 @@ def find_user_albums(username)
      end.to_json
 end
 
-def find_album_photos(album_id)
-  binding.pry
-  ALBUMS.find({title: album_id})
+def find_album_photos(album_title)
+  ALBUMS.find({title: album_title.capitalize})
       .to_a[0]['photos'].map do |photo_id|
         PHOTOS.find({_id: photo_id}).to_a[0]
       end.to_json
 end
+
+
+# ALBUMS.find({title: album_id}).to_a[0]['photos'].map do |photo_id|
+#         PHOTOS.find({_id: photo_id}).to_a[0]
+#       end.to_json
