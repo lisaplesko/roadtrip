@@ -14,19 +14,17 @@ roadTripApp.screenshot = {
 
   capture : function(){
     // Fetch canvas and apply screenshot to a new Image object.
-    var canvas = document.getElementById('hyperFixed');
+    var canvas = document.getElementByIdh('hyperFixed');
     var image = new Image();
-    image.id = IdGenerator.generateId();
     image.src = canvas.toDataURL();
 
     // Persist the image - save the whole image or just the url?????
-    this.sendToS3(image);
+    var s3_image = this.sendToS3(image);
 
     // Updat the list.
-    var template = '<li class="" data-id="' + image.id + '"></li>';
+    var template = '<li class="" data-id="' + s3_image.id + '"><img src="'+s3_image.url + '"/></li>';
     var picList = $('#picList');
     picList.append(template);
-    picList.children().last().append(image);
   },
 
   sendToS3 : function(image){
@@ -40,11 +38,5 @@ roadTripApp.screenshot = {
       console.log("Added to album!");
     });
 
-  }
-};
-
-var IdGenerator = {
-  generateId : function(){
-    return new Date().getTime();
   }
 };
