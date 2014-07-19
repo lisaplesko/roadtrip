@@ -33,6 +33,10 @@ ALBUMS = DB.collection('albums')
     erb :home
   end
 
+  get '/go' do
+    erb :go
+  end
+
   get '/:username/albums' do
     erb :albums
   end
