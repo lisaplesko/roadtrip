@@ -59,15 +59,7 @@ GSVPANO.PanoLoader = function (parameters) {
 			if (this.onPanoramaLoad) {
 				this.onPanoramaLoad();
 				var tile = this.canvas.toDataURL();
-				console.log(tile)
-				$.ajax({
-					url: '/api/tiles',
-					method: 'post',
-					dataType: 'json',
-					data: {tile_url: tile}
-				}).done(function(data){
-					console.log('tile added',data)
-				});
+				//?
 			}
 		}
 		

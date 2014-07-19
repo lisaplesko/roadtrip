@@ -13,6 +13,8 @@ html,body{
 	margin: 0;
 }
 #pano{
+	background: url('../img/cartographer_2x.png');
+	background-repeat: auto;
 	position: absolute; 
 	left: 0; 
 	top: 0;
@@ -50,7 +52,7 @@ html,body{
 	.hud-content{
 		background: rgba(255,255,255,0.98);
 		padding: 1px 18px;
-		height: 145px;
+		min-height: 200px;
 		@include border-top-radius(6px);
 		border: 1px solid #ccc;
 		border-bottom: none;
@@ -59,6 +61,7 @@ html,body{
 		}
 		p{
 			color: #444;
+			margin-bottom: 85px;
 		}
 	}
 	button{
