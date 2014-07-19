@@ -41,13 +41,11 @@
       }
       loadTitleSubmit();
       
-      function factChanger(){
-        changer = setInterval(new function(){
-                document.getElementById('hud-body').innerHTML = FACTS[2];
-             }, 3000);
-      }
+
+                document.getElementById('hud-body').innerHTML = "Catalonia comprises four provinces: Barcelona, Girona, Lleida, and Tarragona. The capital and largest city is Barcelona, the second largest city in Spain, and the centre of one of the largest metropolitan areas in Europe, and it comprises most of the territory of the former Principality of Catalonia, with the remainder now part of France."
       
-      factChanger();
+      
+
     });
      
     </script>
@@ -135,8 +133,8 @@ var hyperlapse;
         width: window.innerWidth,
         height: window.innerHeight,
         distance_between_points: 5,
-        max_points: 3,
-        zoom: 1,
+        max_points: 240,
+        zoom: 2,
         //use_lookat: true,
         elevation: 50
       });
