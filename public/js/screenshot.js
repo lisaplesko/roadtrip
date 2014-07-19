@@ -1,26 +1,6 @@
 $(document).ready(function(){
   roadTripApp.screenshot.init();
-  loadTitleSubmit();
 });
-
-var loadTitleSubmit = function(){
-  $('#album_title_form').submit( function(e){
-  e.preventDefault();
-  album_title = $('#album_title').val();
-  document.title = "trinity | " + album_title;
-  $('#album_title_container').hide();
-
-  $.ajax({
-    url: '/api/trinity/albums/new',
-    method: 'post',
-    dataType: 'json',
-    data: {album_title: album_title}
-    }).done( function(data){
-      console.log(""+album_title+ "Added to album!");
-    });
-  });
-}
-
 
 roadTripApp.screenshot = {
   init : function(){
