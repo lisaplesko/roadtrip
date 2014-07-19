@@ -17,8 +17,6 @@ use Rack::Session::Pool, :expire_after => 2592000
 # DB = Mongo::Connection.new.db("road_trip_app", :pool_size => 5,
 #   :timeout => 5)
 
-
-
 # HEROKU SETUP
 uri = URI.parse('mongodb://dogetown:towndoge@kahana.mongohq.com:10040/app27588324')
 db_name = uri.path.gsub(/^\//, '')
@@ -27,8 +25,6 @@ DB.authenticate(uri.user,uri.password)
 USERS = DB.collection('users')
 PHOTOS = DB.collection('photos')
 ALBUMS = DB.collection('albums')
-
-
 
 # ROUTES
 
@@ -54,13 +50,15 @@ ALBUMS = DB.collection('albums')
     album_title = params[:album_title]
     ALBUMS.insert({title: album_title}).to_json
   end
+
   get '/api/:username/albums/:album_title/photos' do
     find_album_photos(params[:username],params[:album_title])
   end
 
-  get '/add_to_album' do
-   filename = session[:username]+"/albums/"+session[:album_title]+"/photos"
-   upload(filename,params[:data])
+  post '/api/:username/albums/:album_name/add_to_album' do
+    puts "PHOTO"
+    puts params[0]
+    upload(params[:username],params[:album_name],params)
   end
 
 # ADDITIONAL METHODS
@@ -87,16 +85,6 @@ def find_album_photos(username, album_title)
      end.to_json
 end
 
-def upload(filename, file)
-    bucket = s3.buckets[ENV['S3_BUCKET_NAME']]
-    AWS::S3::Base.establish_connection!(
-      :access_key_id     => ENV['ACCESS_KEY_ID'],
-      :secret_access_key => ENV['SECRET_ACCESS_KEY'],
-    )
-    AWS::S3::S3Object.store(
-      filename,
-      open(file.path),
-      bucket
-    )
-    return filename
+def upload(data)
+
 end
