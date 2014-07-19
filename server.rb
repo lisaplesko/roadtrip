@@ -46,9 +46,10 @@ ALBUMS = DB.collection('albums')
     find_user_albums(params[:username])
   end
 
-  post '/api/:username/albums' do
+  post '/api/:username/albums/new' do
     album_title = params[:album_title]
-    ALBUMS.insert({title: album_title, photos: []}).to_json
+    album_id = ALBUMS.insert({title: album_title, photos: []})
+    USERS.update({username: params[:username]}, {"$push"=> {albums: album_id }})
   end
 
   get '/api/:username/albums/:album_title/photos' do

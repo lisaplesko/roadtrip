@@ -18,7 +18,6 @@ roadTripApp.controller('AlbumCtrl', ['$scope', 'albumFactory', function($scope, 
       console.log(data);
     });
   }
-
   init();
 }])
 
