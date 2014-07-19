@@ -30,8 +30,8 @@ ALBUMS = DB.collection('albums')
     erb :albums
   end
 
-  get '/trip' do
-    erb :trip
+  get '/:album_title/photos' do
+    erb :photos
   end
 
   # API
@@ -62,7 +62,8 @@ def find_user_albums(username)
 end
 
 def find_album_photos(album_id)
-  ALBUMS.find({_id: album_id})
+  binding.pry
+  ALBUMS.find({title: album_id})
       .to_a[0]['photos'].map do |photo_id|
         PHOTOS.find({_id: photo_id}).to_a[0]
       end.to_json

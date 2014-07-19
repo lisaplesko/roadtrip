@@ -1,6 +1,6 @@
 <div ng-controller='AlbumCtrl'>
-  <div ng-repeat="album in albums track by $index">
-    <a href="../{{album.title}}/photos">{{album.title}}</a>
+  <div ng-repeat="photo in photos track by $index">
+    <a href="../{{photo.title}}/photos">{{photo.url}}</a>
   </div>
 
 

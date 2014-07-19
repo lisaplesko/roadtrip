@@ -7,7 +7,14 @@ roadTripApp.controller('AlbumCtrl', ['$scope', 'albumFactory', function($scope, 
       $scope.albums = data;
     })
     .error(function(data){
-      console.log('oh no! i, the controller, am the problem')
+      console.log('oh no! i, the getalbums controller, am the problem')
+      console.log(data);
+    });
+
+    albumFactory.getPhotos().success( function(data){
+      $scope.photos = data; })
+    .error(function(data){
+      console.log('oh no! i, the getphotos controller, am the problem')
       console.log(data);
     });
   }
