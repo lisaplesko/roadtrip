@@ -5,6 +5,7 @@
 /**
  * Correct `block` display not defined in IE 8/9.
  */
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,600,600italic,700,700italic,800,800italic,300italic);
 article,
 aside,
 details,
@@ -338,6 +339,12 @@ table {
   border-collapse: collapse;
   border-spacing: 0; }
 
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif; }
+
 html, body {
   width: 100%;
   height: 100%;
@@ -345,12 +352,17 @@ html, body {
   margin: 0; }
 
 #pano {
+  background: url("../img/cartographer_@2X.png");
+  background-repeat: auto;
   position: absolute;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: -1; }
+  z-index: 1;
+  cursor: grab; }
+  #pano:active {
+    cursor: grabbing; }
 
 #map {
   position: absolute;
@@ -366,15 +378,81 @@ html, body {
   right: 20px;
   top: 20px;
   width: 400px;
-  height: 200px;
-  background: white;
-  border: 1px solid #ccc;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-  -webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.03);
-  -moz-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.03);
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.03); }
+  min-height: 200px;
+  overflow: hidden;
+  z-index: 2;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  -webkit-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06);
+  -moz-box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06);
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.06); }
+  #hud .hud-content {
+    background: rgba(255, 255, 255, 0.98);
+    padding: 1px 18px;
+    min-height: 200px;
+    -webkit-border-top-right-radius: 6px;
+    -moz-border-radius-topright: 6px;
+    border-top-right-radius: 6px;
+    -webkit-border-top-left-radius: 6px;
+    -moz-border-radius-topleft: 6px;
+    border-top-left-radius: 6px;
+    border: 1px solid #ccc;
+    border-bottom: none; }
+    #hud .hud-content h3 {
+      color: #ccc; }
+    #hud .hud-content p {
+      color: #444;
+      margin-bottom: 85px; }
+  #hud button {
+    background: #4183D7;
+    border: none;
+    color: #fff;
+    padding: 0px 8px; }
+
+.inactive-button {
+  background: #81CFE0 !important;
+  cursor: default; }
+  .inactive-button:hover {
+    background: #68c6da !important;
+    -webkit-transition: background, 300;
+    -moz-transition: background, 300;
+    -o-transition: background, 300;
+    transition: background, 300; }
+
+.hud-nav {
+  position: absolute;
+  bottom: 0;
+  height: 55px;
+  width: 100%;
+  overflow: hidden;
+  -webkit-border-bottom-right-radius: 3px;
+  -moz-border-radius-bottomright: 3px;
+  border-bottom-right-radius: 3px;
+  -webkit-border-bottom-left-radius: 3px;
+  -moz-border-radius-bottomleft: 3px;
+  border-bottom-left-radius: 3px; }
+  .hud-nav button {
+    display: inline-block;
+    width: 50%;
+    -webkit-transition: background, 200;
+    -moz-transition: background, 200;
+    -o-transition: background, 200;
+    transition: background, 200; }
+    .hud-nav button * {
+      display: inline-block; }
+    .hud-nav button p {
+      margin-left: 0px;
+      margin-right: 12px; }
+    .hud-nav button:first-of-type p {
+      margin-left: 12px;
+      margin-right: 0px; }
+    .hud-nav button:hover {
+      background: #2b73ce !important;
+      -webkit-transition: background, 300;
+      -moz-transition: background, 300;
+      -o-transition: background, 300;
+      transition: background, 300; }
 
 #controls {
   visibility: hidden; }

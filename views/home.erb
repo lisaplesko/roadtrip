@@ -1,11 +1,29 @@
+<div class="home-page" style="background-image: url(https://s3.amazonaws.com/ooomf-com-files/SxzoRwBVRgiIliTBXr2h_kyoyo.jpg); background-size: cover; height: 100%; text-align: center">
+
   <div ng-controller='AlbumCtrl'>
 
-    <div ng-repeat="album in albums track by $index">
+    <!-- <div ng-repeat="album in albums track by $index">
       {{album.title}}
-    </div>
+    </div> -->
 
-      <div id="pano">
-      </div>
+    <form action="../">
+      <select onchange="window.open(this.options[this.selectedIndex].value,'_top')" class="destination-select">
+        <option value="" style="font-family: 'Ubuntu', sans-serif;">Choose a destination...</option>
+        <option value="/go">Barcelona</option>
+        <option value="">Berlin</option>
+        <option value="">London</option>
+        <option value="">New York</option>
+        <option value="">Paris</option>
+        <option value="">Prague</option>
+        <option value="">Rome</option>
+        <option value="">Venice</option>
+        <option value="">Washington</option>
+      </select>
+    </form>
 
-      <h1>Bite me yoo</h1>
+    <canvas id="hyperFixed"></canvas>
+    <canvas id="hyper"></canvas>
+ <!--    <h1>Bite me yoo</h1> -->
   </div>
+
+</div>

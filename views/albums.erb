@@ -1,12 +1,11 @@
 <div ng-controller='AlbumCtrl'>
   <div ng-repeat="album in albums track by $index">
-    {{album.title}}
+    <a href="albums/{{album.title}}/photos">{{album.title}}</a>
+    PHOTOS
+    <div id="dog" ng-repeat="photo in album.photos | filterz:'$index':true ">
+      <img data-id="photo-{{$index}}"src="{{photo}}">
+    </div>
   </div>
-
-    <h1>Bite me yoo</h1>
-
-
-  <script src="../js/app.js"></script>
-  <script src="../js/controllers/AlbumCtrl.js"></script>
-  <script src="../js/services/albumFactory.js"></script>
 </div>
+
+<a href="/">Home</a>
