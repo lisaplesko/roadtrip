@@ -459,3 +459,69 @@ html, body {
 
 .map_form {
   visibility: hidden; }
+
+.home-page {
+  width: 100%;
+  height: 100%;
+  background: #eee; }
+
+sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 22%;
+  min-width: 235px;
+  max-width: 300px;
+  height: 100%;
+  background: #fff;
+  border-left: 1px solid rgba(0, 0, 0, 0.18); }
+
+.sidebar-nav {
+  height: 46px;
+  width: 100%;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.18); }
+
+.sidebar-nav-item {
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  height: 100%;
+  min-width: 54px;
+  max-width: 100px;
+  color: rgba(0, 0, 0, 0.18);
+  font-size: 18px; }
+  .sidebar-nav-item a {
+    display: table;
+    width: 100%;
+    height: 100%;
+    vertical-align: middle; }
+  .sidebar-nav-item i {
+    display: table-cell;
+    vertical-align: middle; }
+  .sidebar-nav-item:last-of-type {
+    float: right;
+    border-left: 1px solid rgba(0, 0, 0, 0.18); }
+
+.sidebar-masthead {
+  width: 100%;
+  max-height: 360px;
+  text-align: center;
+  padding: 60px 22px; }
+  .sidebar-masthead h1 {
+    color: #890707;
+    font-size: 20px;
+    letter-spacing: -0.2px; }
+  .sidebar-masthead p {
+    color: rgba(67, 67, 67, 0.45);
+    font-style: italic; }
+
+.logo {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  background: url("../img/logo.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% auto; }
+
+/*# sourceMappingURL=style.css.map */

@@ -1,4 +1,4 @@
-<div class="home-page" style="background-image: url(https://s3.amazonaws.com/ooomf-com-files/SxzoRwBVRgiIliTBXr2h_kyoyo.jpg); background-size: cover; height: 100%; text-align: center">
+<div class="home-page">
 
   <div ng-controller='AlbumCtrl'>
 
@@ -6,7 +6,7 @@
       {{album.title}}
     </div> -->
 
-    <form action="../">
+  <!--   <form action="../">
       <select onchange="window.open(this.options[this.selectedIndex].value,'_top')" class="destination-select">
         <option value="" style="font-family: 'Ubuntu', sans-serif;">Choose a destination...</option>
         <option value="/go">Barcelona</option>
@@ -19,8 +19,22 @@
         <option value="">Venice</option>
         <option value="">Washington</option>
       </select>
-    </form>
-
+    </form> -->
+    <sidebar>
+      <section class="sidebar-nav">
+        <div class="sidebar-nav-item">
+          <a><i class="fa fa-arrow-left"></i></a>
+        </div>
+        <div class="sidebar-nav-item">
+           <a><i class="fa fa-cog"></i></a>
+        </div>
+      </section>
+      <section class="sidebar-masthead">
+        <div class="logo"></div>
+        <h1>Roadtrip</h1>
+        <p>Immersive tours for learning or pleasure</p>
+      </section>
+    </sidebar>
     <canvas id="hyperFixed"></canvas>
     <canvas id="hyper"></canvas>
  <!--    <h1>Bite me yoo</h1> -->
